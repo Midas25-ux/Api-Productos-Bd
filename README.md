@@ -150,11 +150,11 @@ Dentro de este archivo se almacena la información de todos los productos.
 
 ![Swagger](/app/media/image3.png)
 
-![Swagger](/app/media/image3.1.png)
-
 ![Swagger](/app/media/image4.png)
 
 ![Swagger](/app/media/image5.png)
+
+![Swagger](/app/media/image6.png)
 
 ---
 
