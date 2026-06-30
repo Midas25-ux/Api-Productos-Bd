@@ -144,13 +144,17 @@ Dentro de este archivo se almacena la información de todos los productos.
 ---
 # Capturas de Pantalla 
 
-![Swagger](app/media/image.png)
-
-![Swagger](/app/media/image1.png)
+![Swagger](app/media/image1.png)
 
 ![Swagger](/app/media/image2.png)
 
+![Swagger](/app/media/image3.1.png)
+
 ![Swagger](/app/media/image3.png)
+
+![Swagger](/app/media/image4.png)
+
+![Swagger](/app/media/image5.png)
 
 ---
 
@@ -163,7 +167,7 @@ Este proyecto permitió aplicar los conceptos fundamentales del desarrollo de AP
 
 ## Autor
 
-**Nombre:** Nicol Neira
+**Nombre:** Brayan Steven Moreno Gutierrez
 
 **Proyecto:** API Inventario v1
 
