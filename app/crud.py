@@ -10,6 +10,11 @@ def get_product(db: Session, product_id: int):
     return db.query(models.Product).filter(
         models.Product.id == product_id
     ).first()
+    
+def get_product_by_name(db: Session, name: str):
+    return db.query(models.Product).filter(
+        models.Product.name == name
+    ).first()
 
 
 def create_product(db: Session, product: schemas.ProductCreate):
@@ -22,13 +27,13 @@ def create_product(db: Session, product: schemas.ProductCreate):
     return db_product
 
 
-def update_product(db: Session, product_id: int, product: schemas.ProductUpdate):
+def update_product(db: Session, product_id: int, update_data: dict):
     db_product = get_product(db, product_id)
 
     if not db_product:
         return None
 
-    for key, value in product.model_dump().items():
+    for key, value in update_data.items():
         setattr(db_product, key, value)
 
     db.commit()

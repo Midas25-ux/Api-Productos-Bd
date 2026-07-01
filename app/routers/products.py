@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .. import crud, schemas
@@ -10,8 +10,19 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=schemas.ProductResponse)
+@router.post("/", response_model=schemas.ProductResponse, status_code=status.HTTP_201_CREATED)
 def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
+    existing_product = crud.get_product_by_name(db, product.name)
+    if existing_product:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "error": {
+                    "code": "PRODUCT_ALREADY_EXISTS",
+                    "message": "Ya existe un producto con ese nombre"
+                }
+            }
+        )
     return crud.create_product(db, product)
 
 
@@ -25,7 +36,15 @@ def read_product(product_id: int, db: Session = Depends(get_db)):
     product = crud.get_product(db, product_id)
 
     if not product:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "error": {
+                    "code": "PRODUCT_NOT_FOUND",
+                    "message": "El producto solicitado no existe"
+                }
+            }
+        )
 
     return product
 
@@ -36,10 +55,31 @@ def update_product(
     product: schemas.ProductUpdate,
     db: Session = Depends(get_db)
 ):
-    updated = crud.update_product(db, product_id, product)
+    update_data = product.model_dump(exclude_unset=True)
+
+    if not update_data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "error": {
+                    "code": "EMPTY_UPDATE_BODY",
+                    "message": "Debe enviar al menos un campo para actualizar"
+                }
+            }
+        )
+
+    updated = crud.update_product(db, product_id, update_data)
 
     if not updated:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "error": {
+                    "code": "PRODUCT_NOT_FOUND",
+                    "message": "El producto solicitado no existe"
+                }
+            }
+        )
 
     return updated
 
@@ -49,6 +89,14 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     deleted = crud.delete_product(db, product_id)
 
     if not deleted:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "error": {
+                    "code": "PRODUCT_NOT_FOUND",
+                    "message": "El producto solicitado no existe"
+                }
+            }
+        )
 
     return {"message": "Producto eliminado correctamente"}
